@@ -2,3 +2,4 @@ isodir/
 *.bin
 *.iso
 *.o
+*.a

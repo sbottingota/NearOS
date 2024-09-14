@@ -1,35 +1,12 @@
+#include "tty.h"
+
+#include "vga.h"
+
+// #include <string.h>
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
-// If you are targeting the wrong os.
-#if defined(__linux)
-#error "You are not using a cross-compiler."
-#endif
-
-// If you are not targeting 32-bit ix86 target.
-#if !defined(__i386)
-#error "Code must be compiled with ix86-elf compiler."
-#endif
-
-enum vga_color {
-    VGA_COLOR_BLACK = 0,
-	VGA_COLOR_BLUE = 1,
-	VGA_COLOR_GREEN = 2,
-	VGA_COLOR_CYAN = 3,
-	VGA_COLOR_RED = 4,
-	VGA_COLOR_MAGENTA = 5,
-	VGA_COLOR_BROWN = 6,
-	VGA_COLOR_LIGHT_GREY = 7,
-	VGA_COLOR_DARK_GREY = 8,
-	VGA_COLOR_LIGHT_BLUE = 9,
-	VGA_COLOR_LIGHT_GREEN = 10,
-	VGA_COLOR_LIGHT_CYAN = 11,
-	VGA_COLOR_LIGHT_RED = 12,
-	VGA_COLOR_LIGHT_MAGENTA = 13,
-	VGA_COLOR_LIGHT_BROWN = 14,
-	VGA_COLOR_WHITE = 15,
-};
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -41,25 +18,6 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t *terminal_buffer;
-
-static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
-{
-    return fg | bg << 4;
-}
-
-static inline uint16_t vga_entry(unsigned char uc, uint8_t color) 
-{
-    return (uint16_t) uc | (uint16_t) color << 8;
-}
-
-size_t strlen(const char *str)
-{
-	size_t len = 0;
-	while (str[len]) {
-		++len;
-    }
-	return len;
-}
 
 void terminal_initialize(void)
 {
@@ -150,30 +108,3 @@ void terminal_writestring(const char *data)
 {
     terminal_write(data, strlen(data));
 }
-
-void kernel_main(void)
-{
-    terminal_initialize();
-    terminal_writestring("Hello, world!\n");
-
-    // test output
-    /*
-    terminal_writestring("abcdefg\nabcd\tefg\nabcd\vefg\nabcd\refg\nabcd\befg\n");
-
-    for (int i = 100; i < 1000; ++i) {
-        terminal_writestring("Hello, world! 1\n");
-        for (int j = 0; j < 99999999; ++j) {
-            __asm__("nop");
-        }
-        terminal_writestring("Hello, world! 2\n");
-        for (int j = 0; j < 99999999; ++j) {
-            __asm__("nop");
-        }
-        terminal_writestring("Hello, world! 3\n");
-        for (int j = 0; j < 99999999; ++j) {
-            __asm__("nop");
-        }
-    }
-    */
-}
-
