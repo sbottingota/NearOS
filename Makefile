@@ -8,21 +8,27 @@ CFLAGS=-std=gnu99 -ffreestanding -Wall -Wextra -O2
 
 KERNEL_SRC=$(wildcard kernel/*.c)
 LIBC_SRC=$(wildcard libc/*.c)
+PROGRAM_SRC=$(wildcard program/*.c)
 
 boot.o: boot.s
 	$(AS) boot.s -o boot.o
 
-libc.a: $(LIBC_SRC)
-	cd libc && $(CC) -c *.c $(CFLAGS)
-	$(AR) -rc $@ libc/*.o
+libk.a: $(KERNEL_SRC)
+	cd kernel && $(CC) -c *.c $(CFLAGS)
+	$(AR) -rc $@ kernel/*.o
 	ranlib $@
 
-kernel.o: $(KERNEL_SRC)
-	cd kernel && $(CC) -c *.c $(CFLAGS)
-	$(LD) -r kernel/*.o -o kernel.o libc.a
+libc.a: $(LIBC_SRC) libk.a
+	cd libc && $(CC) -c **/*.c $(CFLAGS) -l:libk.a -I../kernel
+	$(AR) -rc $@ libc/*.o libk.a
+	ranlib $@
 
-nearos.bin: linker.ld boot.o libc.a kernel.o
-	$(CC) -T linker.ld -o nearos.bin boot.o kernel.o -ffreestanding -O2 -nostdlib -lgcc	
+program.o: libc.a $(PROGRAM_SRC)
+	cd program && $(CC) -c $$(find -type f -iname *.c -print) $(CFLAGS)
+	$(LD) -r program/*.o -o program.o libc.a
+
+nearos.bin: linker.ld boot.o libc.a program.o
+	$(CC) -T linker.ld -o nearos.bin boot.o program.o -ffreestanding -O2 -nostdlib -lgcc -L. -l:libk.a -l:libc.a
 
 nearos.iso: nearos.bin grub.cfg	
 	mkdir -p isodir/boot/grub

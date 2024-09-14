@@ -75,16 +75,17 @@ _start:
 	C++ features such as global constructors and exceptions will require
 	runtime support to work as well.
 	*/
+    call terminal_initialize
 
 	/*
-	Enter the high-level kernel. The ABI requires the stack is 16-byte
+	Call user code. The ABI requires the stack is 16-byte
 	aligned at the time of the call instruction (which afterwards pushes
 	the return pointer of size 4 bytes). The stack was originally 16-byte
 	aligned above and we've pushed a multiple of 16 bytes to the
 	stack since (pushed 0 bytes so far), so the alignment has thus been
 	preserved and the call is well defined.
 	*/
-	call kernel_main
+	call main
 
 	/*
 	If the system has nothing more to do, put the computer into an
