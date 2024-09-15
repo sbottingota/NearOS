@@ -2,19 +2,21 @@
 .PHONY: clean
 
 LD=i686-elf-ld
+NASM=nasm
 AS=i686-elf-as
 CC=i686-elf-gcc
 CFLAGS=-std=gnu99 -ffreestanding -Wall -Wextra -O2
 
-KERNEL_SRC=$(wildcard kernel/*.c)
-LIBC_SRC=$(wildcard libc/*.c)
-PROGRAM_SRC=$(wildcard program/*.c)
+KERNEL_SRC=$(wildcard kernel/*)
+LIBC_SRC=$(wildcard libc/**/*)
+PROGRAM_SRC=$(wildcard program/*)
 
 boot.o: boot.s
 	$(AS) boot.s -o boot.o
 
 libk.a: $(KERNEL_SRC)
 	cd kernel && $(CC) -c *.c $(CFLAGS)
+	cd kernel && $(NASM) -f elf32 *.asm
 	$(AR) -rc $@ kernel/*.o
 	ranlib $@
 
