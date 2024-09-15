@@ -7,9 +7,9 @@ Once you have that, just run `make` to compile.
 
 ## Running
 You can use an emulator such as [qemu](https://www.qemu.org/) to run it.
-To boot from bin, run `qemu-system-i386 -kernel nearos.bin`.  
+To boot from bin, run `qemu-system-i386 -kernel nearos.bin`. (Or just run `make qemu` to automatically run from bin.)  
 To boot from iso, run `qemu-system-i383 -cdrom nearos.iso`.
-(Or just run `make qemu` to automatically run from bin.)
+
 
 ## Uploading Code
 By default, all the .c files in the program/ directory are compiled together, and then the `main` method is called (which should not take in or return any values).
