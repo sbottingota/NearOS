@@ -1,5 +1,6 @@
-#include "../libc/stdio/stdio.h"
+#include <stdio.h>
+
 
 void main(void) {
-    puts("Hello, world!");
+    printf("Hello, world!\n");
 }

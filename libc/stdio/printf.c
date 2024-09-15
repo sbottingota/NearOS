@@ -2,10 +2,10 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#include "stdio.h"
-#include "../string/string.h"
+#include <stdio.h>
+#include <string.h>
 
-#include "tty.h"
+#include <tty.h>
 
 void printf(const char *restrict format, ...) {
 	va_list parameters;

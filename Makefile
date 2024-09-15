@@ -19,12 +19,12 @@ libk.a: $(KERNEL_SRC)
 	ranlib $@
 
 libc.a: $(LIBC_SRC) libk.a
-	cd libc && $(CC) -c **/*.c $(CFLAGS) -l:libk.a -I../kernel
+	cd libc && $(CC) -c **/*.c $(CFLAGS) -I../kernel -I.
 	$(AR) -rc $@ libc/*.o libk.a
 	ranlib $@
 
 program.o: libc.a $(PROGRAM_SRC)
-	cd program && $(CC) -c $$(find -type f -iname *.c -print) $(CFLAGS)
+	cd program && $(CC) -c $$(find -type f -iname *.c -print) $(CFLAGS) -I../libc/
 	$(LD) -r program/*.o -o program.o libc.a
 
 nearos.bin: linker.ld boot.o libc.a program.o
