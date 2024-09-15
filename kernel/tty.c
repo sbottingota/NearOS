@@ -71,9 +71,14 @@ void terminal_putchar(char c) {
             break;
 
         case '\b':
-            if (terminal_column > 0) {
-                --terminal_column;
+            if (terminal_column == 0 && terminal_row == 0) break;
+            if (terminal_column == 0) {
+                --terminal_row;
+                terminal_column = VGA_WIDTH;
             }
+
+            --terminal_column;
+            terminal_buffer[terminal_row * VGA_WIDTH + terminal_column] = vga_entry(' ', terminal_color);
             break;
 
         default:

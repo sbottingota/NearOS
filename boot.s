@@ -78,6 +78,7 @@ _start:
     call gdt_initialize
     call idt_initialize
     call terminal_initialize
+    call kbd_initialize
 
 	/*
 	Call user code. The ABI requires the stack is 16-byte
@@ -101,7 +102,7 @@ _start:
 	3) Jump to the hlt instruction if it ever wakes up due to a
 	   non-maskable interrupt occurring or due to system management mode.
 	*/
-	cli
+	// cli
 1:	hlt
 	jmp 1b
 

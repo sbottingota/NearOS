@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+char in_port_b(uint16_t port);
 void out_port_b(uint16_t port, uint8_t value);
 
 struct interrupt_registers {
