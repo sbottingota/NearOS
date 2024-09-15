@@ -76,6 +76,7 @@ _start:
 	runtime support to work as well.
 	*/
     call gdt_initialize
+    call idt_initialize
     call terminal_initialize
 
 	/*

@@ -16,7 +16,9 @@ boot.o: boot.s
 
 libk.a: $(KERNEL_SRC)
 	cd kernel && $(CC) -c *.c $(CFLAGS)
-	cd kernel && $(NASM) -f elf32 *.asm
+	cd kernel && for file in *.asm; do \
+		$(NASM) -f elf32 $$file; \
+	done
 	$(AR) -rc $@ kernel/*.o
 	ranlib $@
 
@@ -25,7 +27,7 @@ libc.a: $(LIBC_SRC) libk.a
 	$(AR) -rc $@ libc/*.o libk.a
 	ranlib $@
 
-program.o: libc.a $(PROGRAM_SRC)
+program.o: $(PROGRAM_SRC) libc.a
 	cd program && $(CC) -c $$(find -type f -iname *.c -print) $(CFLAGS) -I../libc/
 	$(LD) -r program/*.o -o program.o libc.a
 

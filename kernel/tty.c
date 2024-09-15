@@ -105,3 +105,15 @@ void terminal_error(const char *data, size_t size) {
     terminal_color = prev_color;
 }
 
+void terminal_write_string(const char *str) {
+    for (const char *c = str; *c != '\0'; ++c) {
+        terminal_putchar(*c);
+    }
+}
+void terminal_error_string(const char *str) {
+    uint8_t prev_color = terminal_color;    
+    terminal_color = terminal_error_color;
+    terminal_write_string(str);
+    terminal_color = prev_color;
+}
+
