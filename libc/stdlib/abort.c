@@ -1,9 +1,12 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
+
+#include <tty.h>
 
 __attribute__((__noreturn__))
 void abort(void) {
-    printf("kernel: panic: abort()\n");
+    char error_msg[] = "kernel: panic: abort()\n";
+    terminal_error(error_msg, strlen(error_msg));
 
     while(1) {}
     __builtin_unreachable();

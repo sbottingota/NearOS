@@ -15,12 +15,14 @@ static const size_t VTAB_SIZE = 1;
 size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
+uint8_t terminal_error_color;
 uint16_t *terminal_buffer;
 
 void terminal_initialize(void) {
     terminal_row = 0;
     terminal_column = 0;
     terminal_color = vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE);
+    terminal_error_color = vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE);
     terminal_buffer = (uint16_t *) 0xB8000;
 
     for (size_t y = 0; y < VGA_HEIGHT; ++y) {
@@ -94,5 +96,12 @@ void terminal_write(const char *data, size_t size) {
     for (size_t i = 0; i < size; ++i) {
         terminal_putchar(data[i]);
     }
+}
+
+void terminal_error(const char *data, size_t size) {
+    uint8_t prev_color = terminal_color;    
+    terminal_color = terminal_error_color;
+    terminal_write(data, size);
+    terminal_color = prev_color;
 }
 
