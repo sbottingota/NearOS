@@ -44,6 +44,6 @@ qemu: nearos.bin
 	qemu-system-i386 -kernel nearos.bin
 
 clean:
-	rm -f *.o *.bin *.iso *.a
+	rm -f *.o *.bin *.iso *.a *.out
 	rm -f **/*.o
 	rm -rf isodir
