@@ -2,7 +2,9 @@
 
 void main(void) {
     printf("Hello, world!\n");
-    printf("%d/%d=%f\n", 5, 3, 5.0/3.0);
+    for (float x = 0; x < 3; x += 0.1) {
+        printf("%f\n", x);
+    }
     // putchar(1/0);
 }
 
