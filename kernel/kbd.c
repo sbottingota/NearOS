@@ -70,28 +70,7 @@ UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN
 bool shifted = false;
 bool caps_lock = false;
 
-void handle_shift_caps(struct interrupt_registers *regs) {
-    char scan_code = get_current_scan_code();
-    char press = get_current_press();
-
-    switch (scan_code) {
-        case 42: // lshift
-        case 54: // rshift
-            shifted = press == 0; // if pressed, turn on, otherwise (if unpressed) turn off
-            break;
-
-        case 58: // caps lock
-            if (press == 0) { // if pressed, toggle
-                caps_lock = !caps_lock;
-            }
-            break;
-
-        default: // for the time being, print everything else if it is printable
-            if (press == 0 && is_printable(parse_char(scan_code))) {
-                terminal_putchar(parse_char(scan_code));
-            }
-    }
-}
+kbd_listener listeners[MAX_LISTENERS] = {0};
 
 char get_current_scan_code(void) {
     return in_port_b(0x60) & 0x7F;
@@ -113,7 +92,56 @@ char parse_char(char scan_code) {
     }
 }
 
+void handle_shift_caps(void) {
+    char scan_code = get_current_scan_code();
+    char press = get_current_press();
+
+    switch (scan_code) {
+        case 42: // lshift
+        case 54: // rshift
+            shifted = press == 0; // if pressed, turn on, otherwise (if unpressed) turn off
+            break;
+
+        case 58: // caps lock
+            if (press == 0) { // if pressed, toggle
+                caps_lock = !caps_lock;
+            }
+            break;
+    }
+}
+
+bool add_listener(kbd_listener listener) {
+    for (int i = 0; i < MAX_LISTENERS; ++i) {
+        if (listeners[i] == NULL) {
+            listeners[i] = listener;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool remove_listener(kbd_listener listener) {
+    for (int i = 0; i < MAX_LISTENERS; ++i) {
+        if (listeners[i] == listener) {
+            listeners[i] = NULL;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void notify_listeners(struct interrupt_registers *regs) {
+    for (int i = 0; i < MAX_LISTENERS; ++i) {
+        if (listeners[i] != NULL) {
+            listeners[i]();
+        }
+    }
+}
+
 void kbd_initialize(void) {
-    irq_install_handler(1, handle_shift_caps);
+    irq_install_handler(1, notify_listeners);
+    add_listener(handle_shift_caps);
 }
 

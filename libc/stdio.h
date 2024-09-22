@@ -14,4 +14,7 @@ int vprint(const char *format, va_list va);
 void putchar(char);
 void puts(const char *);
 
+int getchar(void);
+char *gets(char *);
+
 #endif

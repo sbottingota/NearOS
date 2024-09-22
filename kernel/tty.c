@@ -1,6 +1,7 @@
 #include "tty.h"
 
 #include "vga.h"
+#include "kbd.h"
 #include "util.h"
 
 #include <stdbool.h>
@@ -121,6 +122,26 @@ void terminal_putchar(char c) {
     }
 
     update_cursor(terminal_column, terminal_row);
+}
+
+int terminal_getchar(void) {
+    char c = '\0';
+    void listener(void) {
+        if (get_current_press() == 0 && is_printable(get_current_scan_code())) {
+            c = parse_char(get_current_scan_code());
+        }
+    }
+
+    add_listener(listener);
+
+    while (c == '\0') {
+        __asm__("nop");
+    }
+    terminal_putchar(c);
+
+    remove_listener(listener);
+
+    return c;
 }
 
 void terminal_write(const char *data, size_t size) {
