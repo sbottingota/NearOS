@@ -3,14 +3,15 @@
 
 #include <stdbool.h>
 
-#define MAX_COMMANDS 3
+#define MAX_COMMANDS 32
+#define MAX_ARGS 16
 #define COMMAND_NAME_LENGTH 16
 #define COMMAND_LENGTH  64
 #define COMMAND_DESCRIPTION_LENGTH 64
 
 #define PROMPT "$ "
 
-typedef void (*command_fun)(char *);
+typedef void (*command_fun)(int, char **); // argc, argv
 
 struct command_entry {
     char name[COMMAND_NAME_LENGTH];

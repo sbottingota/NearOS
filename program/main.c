@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "command.h"
+#include "console.h"
 
 void main(void) {
     while (1) {

@@ -1,4 +1,4 @@
-#include "command.h"
+#include "console.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -37,16 +37,31 @@ void evaluate_command(void) {
     printf("%s", PROMPT);
     gets(buf);
 
+    if (buf == "") return;
+
+    // split the string in two
+    int argc = 1;
+    char *argv[MAX_ARGS] = {0};
+    for (char *c = buf; *c != '\0' && argc < MAX_ARGS; ++c) {
+        if (*c == ' ') {
+            *c = '\0';
+            ++c;
+
+            argv[argc] = c;
+            ++argc;
+        }
+    }
+
     command_fun command = get_command(buf);
     if (command == NULL) {
         printf("Unknown command '%s'. Try 'help'.\n", buf);
         return;
     }
 
-    command(buf);
+    command(argc, argv);
 }
 
-void help(char *s) {
+void help() {
     printf("List of all known commands:\n");
     
     for (int i = 0; i < n_registered_commands; ++i) {
@@ -54,8 +69,16 @@ void help(char *s) {
     }
 }
 
-void command_initialize(void) {
+void echo(int argc, char **argv) {
+    for (int i = 1; i < argc; ++i) {
+        printf("%s ", argv[i]);
+    }
+    printf("\n");
+}
+
+void console_initialize(void) {
     // memset(commands, 0, sizeof commands);
     register_command("help", "Prints this menu", help);
+    register_command("echo", "Prints it's arguments", echo);
 }
 
