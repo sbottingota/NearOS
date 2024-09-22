@@ -15,10 +15,10 @@ boot.o: boot.s
 	$(AS) boot.s -o boot.o
 
 libk.a: $(KERNEL_SRC)
-	cd kernel && $(CC) -c *.c $(CFLAGS)
-	cd kernel && for file in *.asm; do \
-		$(NASM) -f elf32 $$file; \
-	done
+	cd kernel && $(CC) -c *.s *.c $(CFLAGS)
+	# cd kernel && for file in *.asm; do \
+	#	$(NASM) -f elf32 $$file; \
+	# done
 	$(AR) -rc $@ kernel/*.o
 	ranlib $@
 
