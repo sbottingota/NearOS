@@ -1,6 +1,7 @@
 #include "tty.h"
 
 #include "vga.h"
+#include "util.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -18,12 +19,35 @@ uint8_t terminal_color;
 uint8_t terminal_error_color;
 uint16_t *terminal_buffer;
 
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
+	out_port_b(0x3D4, 0x0A);
+	out_port_b(0x3D5, (in_port_b(0x3D5) & 0xC0) | cursor_start);
+
+	out_port_b(0x3D4, 0x0B);
+	out_port_b(0x3D5, (in_port_b(0x3D5) & 0xE0) | cursor_end);
+}
+
+void disable_cursor(void) {
+	out_port_b(0x3D4, 0x0A);
+	out_port_b(0x3D5, 0x20);
+}
+
+void update_cursor(int x, int y) {
+	uint16_t pos = y * VGA_WIDTH + x;
+
+	out_port_b(0x3D4, 0x0F);
+	out_port_b(0x3D5, (uint8_t) (pos & 0xFF));
+	out_port_b(0x3D4, 0x0E);
+	out_port_b(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+}
 void terminal_initialize(void) {
     terminal_row = 0;
     terminal_column = 0;
     terminal_color = vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE);
     terminal_error_color = vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE);
     terminal_buffer = (uint16_t *) 0xB8000;
+    
+    enable_cursor(0, 15);
 
     for (size_t y = 0; y < VGA_HEIGHT; ++y) {
         for (size_t x = 0; x < VGA_WIDTH; ++x) {
@@ -95,6 +119,8 @@ void terminal_putchar(char c) {
         --terminal_row;
         terminal_scrolltext();
     }
+
+    update_cursor(terminal_column, terminal_row);
 }
 
 void terminal_write(const char *data, size_t size) {

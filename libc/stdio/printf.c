@@ -126,7 +126,8 @@ static int print(char **out, int *varg)
 				continue;
 			}
             if( *format == 'f' ) {
-                ftoa(buf, *varg++);
+                float f = *varg++;
+                ftoa(buf, f);
                 pc += prints (out, buf, width, pad);
                 continue;
             }

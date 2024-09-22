@@ -4,9 +4,9 @@
 #include <math.h>
 #include <ctype.h>
 
-#define PRECISION 0.01
+#define PRECISION 1e-5
 
-char *dtoa(char *s, double n) {
+char *ftoa(char *s, float n) {
     // handle special cases
     if (isnan(n)) {
         strcpy(s, "nan");

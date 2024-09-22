@@ -5,8 +5,7 @@ __attribute__((__noreturn__))
 void abort(void);
 
 int atoi(const char *);
-char *dtoa(char *, double); 
-#define ftoa(s, n) dtoa(s, n)
+char *ftoa(char *, float); 
 
 int abs(int);
 
