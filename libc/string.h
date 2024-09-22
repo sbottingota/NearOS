@@ -10,5 +10,6 @@ void* memset(void *, int, size_t);
 
 size_t strlen(const char *);
 char *strcpy(char *srcptr, char *dstptr);
+int strcmp(const char *, const char *);
 
 #endif

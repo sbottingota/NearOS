@@ -28,7 +28,7 @@ libc.a: $(LIBC_SRC) libk.a
 	ranlib $@
 
 program.o: $(PROGRAM_SRC) libc.a
-	cd program && $(CC) -c $$(find -type f -iname *.c -print) $(CFLAGS) -I../libc/
+	cd program && $(CC) -c $$(find -type f -iname '*.c' -print) $(CFLAGS) -I../libc/
 	$(LD) -r program/*.o -o program.o libc.a
 
 nearos.bin: linker.ld boot.o libc.a program.o

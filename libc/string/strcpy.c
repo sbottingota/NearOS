@@ -1,6 +1,6 @@
 #include <string.h>
 
-char *strcpy(char *srcptr, char *dstptr) {
+char *strcpy(char *dstptr, char *srcptr) {
     while (*srcptr != '\0') { 
         *dstptr = *srcptr;
         ++srcptr;

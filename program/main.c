@@ -1,13 +1,9 @@
 #include <stdio.h>
+#include "command.h"
 
 void main(void) {
-    char buf[100];
-
-    printf("Hello, world!\n");
     while (1) {
-        puts(gets(buf));
+        evaluate_command();
     }
-
-    // putchar(1/0);
 }
 
