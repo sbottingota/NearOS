@@ -2,6 +2,8 @@
 #include <tty.h>
 
 int getchar(void) {
-    return terminal_getchar();
+    char c = terminal_getchar();
+    terminal_putchar(c);
+    return c;
 }
 

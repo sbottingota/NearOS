@@ -127,8 +127,8 @@ void terminal_putchar(char c) {
 int terminal_getchar(void) {
     char c = '\0';
     void listener(void) {
-        if (get_current_press() == 0 && is_printable(get_current_scan_code())) {
-            c = parse_char(get_current_scan_code());
+        if (get_current_press() == 0 && is_printable(get_current_char())) {
+            c = get_current_char();
         }
     }
 
@@ -137,7 +137,6 @@ int terminal_getchar(void) {
     while (c == '\0') {
         __asm__("nop");
     }
-    terminal_putchar(c);
 
     remove_listener(listener);
 

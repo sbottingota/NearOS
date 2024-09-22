@@ -80,6 +80,10 @@ char get_current_press(void) {
     return in_port_b(0x60) & 0x80;
 }
 
+char get_current_char(void) {
+    return parse_char(get_current_scan_code());
+}
+
 bool is_printable(char c) {
     return c < UNPRINTABLE_MIN || c > UNPRINTABLE_MAX;
 }
