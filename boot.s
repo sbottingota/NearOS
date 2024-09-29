@@ -80,6 +80,7 @@ _start:
     call terminal_initialize
     call kbd_initialize
     call console_initialize
+    call timer_initialize
 
 	/*
 	Call user code. The ABI requires the stack is 16-byte

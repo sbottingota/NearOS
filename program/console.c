@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 
 struct command_entry commands[MAX_COMMANDS];
 size_t n_registered_commands = 0;
@@ -76,9 +77,14 @@ void echo(int argc, char **argv) {
     printf("\n");
 }
 
+void print_time() {
+    printf("%d\n", clock());
+}
+
 void console_initialize(void) {
     // memset(commands, 0, sizeof commands);
     register_command("help", "Prints this menu", help);
     register_command("echo", "Prints it's arguments", echo);
+    register_command("time", "Prints the time since startup, in ms", print_time);
 }
 

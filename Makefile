@@ -4,7 +4,7 @@
 LD=ld
 NASM=nasm
 CC=gcc
-CFLAGS=-march=i686 -m32 -ffreestanding -Wall -Wextra -O2
+CFLAGS=-march=i686 -m32 -nostdlib -ffreestanding -Wall -Wextra -O2
 
 KERNEL_SRC=$(wildcard kernel/*)
 LIBC_SRC=$(wildcard libc/**/*)
@@ -31,7 +31,7 @@ program.o: $(PROGRAM_SRC) libc.a
 	$(LD) -m elf_i386 -r program/*.o -o program.o
 
 nearos.bin: linker.ld boot.o libc.a program.o
-	$(CC) $(CFLAGS) -T linker.ld -o nearos.bin boot.o program.o -nostdlib -lgcc -L. -l:libk.a -l:libc.a
+	$(CC) $(CFLAGS) -T linker.ld -o nearos.bin boot.o program.o -lgcc -L. -l:libk.a -l:libc.a
 
 nearos.iso: nearos.bin grub.cfg	
 	mkdir -p isodir/boot/grub
