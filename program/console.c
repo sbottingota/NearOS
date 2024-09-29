@@ -6,7 +6,7 @@
 #include <time.h>
 
 struct command_entry commands[MAX_COMMANDS];
-size_t n_registered_commands = 0;
+int n_registered_commands = 0;
 
 int program_counter = 0;
 struct command_block program[MAX_PROGRAM_LENGTH];
@@ -38,11 +38,15 @@ command_fun get_command(char *name) {
 }
 
 bool store_command_block(int index, command_fun command, int argc, char **argv) {
+    if (index >= MAX_PROGRAM_LENGTH || index < 0) return false;
+
     program[index].command = command;
     program[index].argc = argc;
     for (int i = 0; i < argc; ++i) {
         strcpy(program[index].argv[i], argv[i]);
     }
+
+    return true;
 }
 
 void evaluate_command(void) {
@@ -95,7 +99,6 @@ void help() {
 }
 
 void echo(int argc, char **argv) {
-    printf("\t%d\n", argc);
     for (int i = 1; i < argc; ++i) {
         printf("%s ", argv[i]);
     }
@@ -105,10 +108,20 @@ void echo(int argc, char **argv) {
 void run() {
     program_counter = 0;
     while (program_counter < MAX_PROGRAM_LENGTH) {
-        struct command_block command = program[program_counter];
+        struct command_block *command = &program[program_counter];
         ++program_counter;
-        if (command.command == NULL) continue;
-        command.command(command.argc, command.argv);
+        if (command->command == NULL) continue;
+        char *argv[command->argc];
+        for (int i = 0; i < command->argc; ++i) {
+            argv[i] = &command->argv[i];
+        }
+        command->command(command->argc, argv);
+    }
+}
+
+void goto_linenumber(int argc, char **argv) {
+    if (argc >= 2) {
+        program_counter = atoi(argv[1]);
     }
 }
 
@@ -125,6 +138,7 @@ void console_initialize(void) {
     register_command("help", "Prints this menu", help);
     register_command("echo", "Prints it's arguments", echo);
     register_command("time", "Prints the time since startup, in ms", print_time);
+    register_command("goto", "Makes program run from specified line number", goto_linenumber);
     register_command("run", "Runs the stored program", run);
 }
 
