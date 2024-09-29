@@ -1,6 +1,7 @@
 #include "gdt.h"
 
 extern void gdt_flush(void *);
+extern void set_protected_mode(void);
 
 struct gdt_entry_struct gdt_entries[5];
 struct gdt_ptr_struct gdt_ptr;
@@ -16,6 +17,8 @@ void gdt_initialize(void) {
     set_gdt_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xcF); // user data segment
 
     gdt_flush(&gdt_ptr);
+
+    set_protected_mode();
 }
 
 void set_gdt_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
