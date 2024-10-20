@@ -77,6 +77,7 @@ _start:
 	*/
     call gdt_initialize
     call idt_initialize
+    call paging_initialize
     call terminal_initialize
     call kbd_initialize
     call console_initialize
